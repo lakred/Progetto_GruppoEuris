@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    .custom-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="text-center">
+    <h2 class="display-3"> Concordia Platform @ViewData["Title"] </h2>
+
+    <div class="button-container">
+        <a class="btn btn-outline-dark btn-lg custom-btn me-1" asp-action="GoToTasks"> Tasks </a>
+        <a class="btn btn-outline-dark btn-lg custom-btn me-1" asp-action="GoToUsers"> Users </a>
+    </div>
+
+    <div class="button-container">
+        <a class="btn btn-outline-dark btn-lg custom-btn me-1" asp-action="About"> About </a>
+    </div>
+
+    <div class="button-container">
+        <a class="btn btn-outline-dark btn-lg custom-btn me-1" asp-action="Privacy"> Privacy </a>
+    </div>
+</div>

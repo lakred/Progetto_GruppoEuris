@@ -1,0 +1,54 @@
+﻿@model ConcordiaMVC.Models.TasksList
+
+@{
+    ViewData["Title"] = "Tasks";
+    Layout = "_Layout";
+}
+
+<style>
+    .custom-card {
+        position: relative;
+    }
+
+    .custom-card-content {
+        overflow: hidden;
+    }
+
+    .custom-card-title {
+        margin-top: 10px;
+    }
+
+    .custom-card-text {
+        margin-bottom: 10px;
+    }
+
+    .custom-card-button {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+</style>
+
+<h2 class="display-5"> List </h2>
+
+<div class="d-flex flex-row">
+    <div class="d-flex flex-column w-100">
+        <h4> @ViewData["Title"] List </h4>
+        <div class="d-flex flex-column align-items-center">
+            @foreach (var task in Model.Tasks!)
+            {
+                <div class="card w-100 mb-2 border border-dark custom-card">
+                    <div class="card-body d-flex flex-column position-relative custom-card-content">
+                        <h5 class="card-title custom-card-title"> Id: @task.Experiment!.Id - @task.Experiment!.Name </h5>
+                        <h6 class="card-title"> Priority: <span style="color: @task.Experiment!.Priority!.Color;"> @task.Experiment!.Priority!.Name </span> </h6>
+                        <h6 class="card-title"> State: @task.Experiment!.State!.Name </h6>
+                        <h6 class="card-title"> Start: @task.Experiment!.StartDate </h6>
+                        <h6 class="card-title"> Due: @task.Experiment!.DueDate </h6>
+                        <div class="card-text custom-card-text">Last Comment: @task.Text </div>
+                        <a class="btn btn-outline-dark custom-card-button" asp-action="Detail" asp-route-id="@task.Experiment.Id"> Detail </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

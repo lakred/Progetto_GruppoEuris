@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConcordiaMVC", "ConcordiaMVC\ConcordiaMVC.csproj", "{EB443D3A-4FAB-4D49-9787-866864B00AEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConcordiaDBLibrary", "..\ConcordiaDB\ConcordiaDBLibrary\ConcordiaDBLibrary.csproj", "{737C1F97-5CFC-4855-89B8-0E85C9F1FBA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcordiaTrelloLibrary", "..\ConcordiaTrello\ConcordiaTrelloLibrary\ConcordiaTrelloLibrary.csproj", "{62D45052-1341-40BE-9AE4-E201C4CD60B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcordiaUtilsLibrary", "..\ConcordiaUtils\ConcordiaUtilsLibrary\ConcordiaUtilsLibrary.csproj", "{FDEA1D73-B588-4E72-A157-C3831B575351}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EB443D3A-4FAB-4D49-9787-866864B00AEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB443D3A-4FAB-4D49-9787-866864B00AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB443D3A-4FAB-4D49-9787-866864B00AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB443D3A-4FAB-4D49-9787-866864B00AEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{737C1F97-5CFC-4855-89B8-0E85C9F1FBA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{737C1F97-5CFC-4855-89B8-0E85C9F1FBA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{737C1F97-5CFC-4855-89B8-0E85C9F1FBA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{737C1F97-5CFC-4855-89B8-0E85C9F1FBA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D45052-1341-40BE-9AE4-E201C4CD60B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D45052-1341-40BE-9AE4-E201C4CD60B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D45052-1341-40BE-9AE4-E201C4CD60B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D45052-1341-40BE-9AE4-E201C4CD60B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDEA1D73-B588-4E72-A157-C3831B575351}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDEA1D73-B588-4E72-A157-C3831B575351}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDEA1D73-B588-4E72-A157-C3831B575351}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDEA1D73-B588-4E72-A157-C3831B575351}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F76745BC-8874-4EB6-9B79-C50FBC310BEB}
+	EndGlobalSection
+EndGlobal

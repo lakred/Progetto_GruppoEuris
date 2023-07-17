@@ -1,0 +1,260 @@
+CONCORDIA ABSTRACT
+
+
+DESCRIPTION:
+La Stazione Concordia non ha possibilità di connessione ad Internet se non in una determinata finistra di tempo.  
+Gli altri centri di ricerca vogliono poter richiedere (giorno dopo giorno e a loro piacimento), 
+lo svolgimento di alcuni esperimenti nella Stazione Concordia, quindi è stato scelto Trello come strumento per l’inserimento delle richieste. 
+La Stazione Concordia vuole installare un applicativo che aiuti gli scienziati (dentro e fuori) nel loro lavoro. 
+Sfruttando la finestra di tempo concessa (dal satellite), si vuole poter aggiornare gli scienziati nella Concordia sugli esperimenti da fare 
+e gli scienziati degli altri centri di ricerca sullo stato/risultato degli esperimenti.
+
+Connection Window: cerca di connettersi alla board e se ci riesce esegue la sincronizzazione, quindi ci riprova dopo 360 minuti.
+
+TEAM: 
+- Stefano Pincin
+- Mohamed Lakred
+- Stefano Casagrande (email: stefano98casagrande@gmal.com)
+Team Leader: Stefano Casagrande
+
+
+INFORMATIONS
+Trello Link:   https://trello.com/b/B3sftp9b/squirtleconcordia or https://trello.com/b/B3sftp9b
+
+
+REQUIREMENTS (OR SOFTWARE NEEDED)
+Abbiamo notato che sono necessarie le seguenti applicazioni.
+- Database Locale:      db che immagazzina i dati degli esperimenti (da eseguire, in esecuzione, eseguiti).
+- Client Interni:       interfaccia su browser data dal MVC (per la lettura, scrittura, modifica dei dati all'interno del database)
+- Applicazione MVC:     lavora sui dati del database e sui dati della board
+                        • riceve richieste e fornisce risposte al client
+                        • monitora la finestra di connessione  
+                        • aggiorna dati sulla board rispetto ai dati sul database e viceversa
+- Client Esterni: 	    interfaccia su browser data da Trello (per la lettura, scrittura, modifica dei dati all'interno della board)
+
+ASSIGNEMNTS
+- Stefano Pincin: Libreria per il Database e per Trello, Synchronizer, Testing, Documentazione.
+- Mohamed Lakred: Libreria per il Database e per Trello, Synchronizer, Testing, Reporter, Documentazione.
+- Stefano Casagrande: Progettazione del Database, Applicazione MVC, Documentazione.
+
+
+TRELLO INFORMATIONS AND API
+
+Trello Api (Requirements: Key and Token):
+• Key:   YOUR_KEY 
+• Token: YOUR_TOKEN
+• Ex. Post a message on Trello: https://api.trello.com/1/cards?key=YOUR_KEY&token=YOUR_TOKEN&idList=YOUR_ID_LIST&name=YOUR_CARD_NAME
+
+Trello Informations:
+There is one Board (Database).
+One Board (Database) has none, one or more Lists (State: Start, Working, Finish, Test).
+One List (State) has none, one or more Cards (Experiments).
+One Card has a Name, Description, StartDate, DueDate, Label (Priority), Comments (Remarks), Members (Scientists).
+
+About Trello Elements:
+- Board:   Code, Name, Lists
+- List:    Code, Name, Cards, Board
+- Card:    Code, Name, Description, StartDate, DueDate, Label, Comments, Members
+- Comment: Code, Name, Text, Date, Member
+- Member:  Code, FullName
+- Label:   Code, Name, Color
+
+About Our Trello Board and Lists
+- Board
+  • Name:     SquirtleConcordia
+  • ID:       6475b8a930419d4c8db7b32b
+- Lists (Names: Start, Working, Finish, Test (optional: only for testing))
+  • Test:     6475beacde45ee6c3f568bf6
+  • Start:    6475b8a930419d4c8db7b332
+  • Working:  6475b8a930419d4c8db7b333
+  • Finish:   6475b8a930419d4c8db7b334
+
+
+OBSERVATIONS
+- Nota su Board: 
+  • Facciamo notare che può esistere una e una sola Board. Non possiamo avere altre Boards!
+- Nota su Cards/Experiments: 
+  • I campi modificabili dagli Scientists/Members sono: List/State e Comments/Remarks.
+  • Scientists/Members possono agire solo su List/State e Comments/Remarks.
+  • Il campo aggiunto Loaded sarà modificabile, indicherà se un Card/Experiment è stato caricato sulla Board;
+
+
+DATABASE STRUCTURE
+Database DB: Board = Database 
+Entities DB: List = State, Card = Experiment, Comment = Remark, Member = Scientist, Label = Priority
+Added Entities in DB: Participants () 
+
+NAME = States (Lists on Trello)
+Class/Table: States
+Field/Column                                   C# Type         MSqlServer Type
+- Id                                           int?            [int UNIQUE NOT NULL] ≈> nota: valori 1, 2, 3
+- Code (List Id)                               string?         [varchar(24) NULL]
+- Name                                         string          [varchar(100) UNIQUE NOT NULL] ≈> nota: valori START(1), WORKING(2), FINISH(2)
+PRIMARY KEY (Id)
+
+NAME = Priorities (Labels on Trello)
+Class/Table: Priorities
+Field/Column                                   C# Type         MSqlServer Type
+- Id                                           int?            [int UNIQUE NOT NULL] ≈> nota: valori 1, 2, 3
+- Code (Label Id)                              string?         [varchar(24) NULL]
+- Label                                        string          [varchar(100) UNIQUE NOT NULL] ≈> nota: valori HIGH(1), MEDIUM(2), LOW(2)
+- Color                                        string          [varchar(100) UNIQUE NOT NULL] ≈> nota: valori RED(1), ORANGE(2), GREEN(3)
+PRIMARY KEY (Id)
+
+NAME = Scientists (Members on Trello)
+Class/Table: Remarks
+Field/Column                                   C# Type         MSqlServer Type
+- Id                                           int?            [int IDENTITY(1,1), NOT NULL]
+- Code (Member Id)                             string?         [varchar(24) NULL]
+- FullName				       string          [varchar(100) NOT NULL]
+PRIMARY KEY (ID)
+
+NAME = Experiments (Cards on Trello)
+Class/Table: Experiments
+Field/Column:                                  C# Type         MSqlServer Type
+- Id                                           int?            [int IDENTITY(1,1) UNIQUE NOT NULL]
+- Code (Card Id)                               string?         [varchar(24) NULL]
+- Name                                         string          [varchar(100) NOT NULL]
+- Description                                  string          [varchar(max) NOT NULL]
+- StartDate                                    DateTimeOffset? [datetimeoffset NULL] ≈> nota: fuso orario comune 
+- DueDate                                      DateTimeOffset? [datetimeoffset NULL] ≈> nota: fuso orario comune
+- Loaded                                       bool or int     [bit NULL BIT]  ≈> nota: valori TRUE(1) o FALSE(0)
+- PriorityId                                   int             [int NOT NULL]  ≈> nota: valori 1, 2, 3
+- StateId                                      int             [int NOT NULL]  ≈> nota: valori 1, 2, 3
+PRIMARY KEY (Id)
+FOREIGN KEY (PriorityId)   FROM Priorities(Id)
+FOREIGN KEY (StateId)      FROM States(Id)
+
+NAME = Remarks (Comments on Trello)
+Class/Table: Remarks
+Field/Column                                   C# Type.        MSqlServer Type
+- Id                                           int?            [int IDENTITY(1,1) UNIQUE NOT NULL]
+- CommentId (Comment Id)                       string?         [varchar(24) NULL]
+- Text                                         string          [varchar(max) NOT NULL]
+- Date					       DateTimeOffset? [datetimeoffset NULL] ≈> nota: fuso orario comune
+- ExperimentId				       int             [int NOT NULL]
+- ScientistId                                  int             [int NOT NULL]
+PRIMARY KEY (Id) 
+FOREIGN KEY (ExperimentId) FROM Experiments(Id)
+FOREIGN KEY (ScientistId)  FROM Scientists(Id)
+
+NAME = Participants = Members on Cards
+Class/Table: Remarks
+Field/Column                                   C# Type         MSqlServer Type
+- Id                                           int?            [int IDENTITY(1,1) UNIQUE NOT NULL]
+- ExperimentId                                 int             [int NULL] 
+- ScientistId                                  int?            [int NOT NULL]
+PRIMARY KEY (Id) 
+FOREIGN KEY (ExperimentId) FROM Experiments(Id)
+FOREIGN KEY (ScientistId)  FROM Scientists(Id)
+
+REST CONTRACTS
+definire: GET, POST, PUT e DELETE 
+
+
+UTILS
+- Tasks Scheduler
+  • https://github.com/dahall/TaskScheduler/wiki/Examples
+  • https://github.com/dahall/TaskScheduler/wiki
+  • https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.taskscheduler?view=net-7.0
+  • https://www.youtube.com/watch?v=d-R2xSW_CEA
+- UTC
+  • https://learn.microsoft.com/en-us/dotnet/api/system.datetime.touniversaltime?view=net-7.0
+- Trello API
+  • https://www.nuget.org/packages/TrelloDotNet
+  • https://github.com/rwjdk/TrelloDotNet
+  • https://www.youtube.com/watch?v=tf47BCkieus
+- CHATGPT:
+  • ...
+
+
+DOCUMENTAZIONE DEI TEST UNITARI 
+I test per i gateway dei commenti (RemarksGateway), degli scienziati (ScientistsGateway), degli stati (StatesGateway), delle priorità (PrioritiesGateway), degli esperimenti (ExperimentsGateway) e dei partecipanti (ParticipantsGateway) nel sistema ConcordiaDbLibrary sono divisi in due parti. Entrambe le parti verificano il corretto funzionamento delle operazioni inserimenti, aggiornamento, recupero e eliminazioni delle entità, ma utilizzano approcci leggermente diversi per l'esecuzione dei test.
+
+AMBIENTE DI TEST 
+
+Per eseguire i test, vengono creati due contesti di database: uno in memoria utilizzando l'Entity Framework Core(SimulationDB) e l'altro è un vero database locale(RealDb). Entrambi i contesti vengono istanziati nel costruttore delle classi di test.
+L'utilizzo di entrambi i contesti di database ci permette di eseguire una suite completa di test, coprendo sia gli scenari di test isolati e veloci con il database in memoria, sia gli scenari di test che richiedono interazioni con il vero database locale. Questo approccio ci assicura che i test siano affidabili, indipendentemente dall'ambiente di esecuzione, e che le operazioni di interazione con il database siano conformi alle nostre aspettative.
+Ogni volta che viene eseguito un test nel contesto del vero database locale, ci assicuriamo che l'entità creata durante il test venga correttamente eliminata. Questo garantisce che i dati di test non lascino alcuna traccia nel database reale e che ogni test inizi con uno stato pulito del database.
+
+ELENCO DEI TEST: 
+I test presenti all'interno di ognuna delle classi sono i seguenti: 
+
+    • GetAll_Valid: Verifica che il metodo "GetAll" restituisca correttamente tutte le entità presenti nel database.
+    • GetById_Valid: Verifica che il metodo "GetById" restituisca correttamente l'entità corrispondente all'ID specificato.
+    • GetByIdMulti_Valid: Verifica che il metodo "GetByIdMulti" restituisca correttamente le entità corrispondenti agli ID specificati.
+    • Insert_Valid: Verifica che il metodo "Insert" inserisca correttamente una nuova entità nel database.
+    • InsertMulti_Valid: Verifica che il metodo "InsertMulti" inserisca correttamente più entità nel database.
+    • Update_Valid: Verifica che il metodo "Update" aggiorni correttamente un'entità esistente nel database.
+    • UpdateMulti_Valid: Verifica che il metodo "UpdateMulti" aggiorni correttamente più entità esistenti nel database.
+    • Delete_Valid: Verifica che il metodo "Delete" elimini correttamente un'entità dal database.
+    • DeleteMulti_Valid: Verifica che il metodo "DeleteMulti" elimini correttamente più entità dal database.
+
+ESECUZIONE DEI TEST
+Per eseguire i test, si utilizza un framework di tesing come xUnit. Ogni test viene annotato con l'attributo [Fact] per indicare che è un metodo di test.
+ 
+RISULTATI ATTESI 
+Per ciascun test, sono specificati i risultati attesi utilizzando la asserzioni di xUnit.
+
+CONCLUSIONI
+Le classi di test forniscono una copertura completa dei test unitari per i gateway delle entità nel sistema ConcordiDBLibrary. I test verificano il corretto funzionamento delle operazioni di inserimento, aggiornamento, recupero ed eliminazione delle annotazioni delle entità. Ogni test è progettato per testare uno specifico comportamento dei gateway.
+
+
+DOCUMENTAZIONE DELLA SINCRONIZZAZIONE: 
+La sincronizzazione delle due parti, FromTrelloToDbSync e FromDbToTrelloSync, permette di mantenere i dati consistenti e aggiornati tra Trello e il database e viceversa. 
+
+Queste le due parti che compongono la sincronizzazione: 
+
+1)FromTrelloToDBSync:
+La classe FromTrelloToDBSync è responsabile di sincronizzare i dati tra Trello e il nostro database locale. Utilizzando i gateway appropriati, accede ai dati presenti su Trello e nel database per assicurarsi che siano allineati. Durante la sincronizzazione, il metodo SyncData viene chiamato, prendendo in input l'ID della board di Trello da sincronizzare. Questo metodo esegue una serie di passaggi per garantire la coerenza dei dati:
+
+    ⦁ Ottiene gli ID delle card presenti su Trello.
+    ⦁ Ottiene i codici degli esperimenti esistenti nel database.
+    ⦁ Determina le card mancanti confrontando i codici delle card in Trello con quelli nel database.
+    ⦁ Per ogni card mancante, ottiene i dati dell'esperimento da Trello e crea un nuovo esperimento nel database con le relative priorità, stati e altri dettagli.
+    ⦁ Gestisce gli scienziati associati all'esperimento, verificando la loro esistenza nel database e creando nuovi record se necessario.
+    ⦁ Gestisce i commenti associati all'esperimento, creando nuovi record nel database per gli scienziati associati, se necessario.
+    ⦁ Aggiorna l'esperimento nel database per riflettere le relazioni corrette con priorità, stati, partecipanti e remark.
+    ⦁ Stampa un messaggio di conferma dell'inserimento dell'esperimento nel database.
+    ⦁ Se non ci sono card mancanti, viene stampato un messaggio che indica che i dati nel database sono già sincronizzati.
+
+2)FromDbToTrelloSync:
+La classe FromDbToTrelloSync gestisce la sincronizzazione dei dati dal database a Trello. Utilizzando i gateway appropriati, accede ai dati nel database e interagisce con la piattaforma Trello per assicurarsi che siano allineati. Il metodo SyncFromDb viene chiamato per eseguire la sincronizzazione dei dati dal database a Trello per una specifica board identificata dall'ID della board. Durante la sincronizzazione, vengono eseguiti i seguenti passaggi:
+
+    ⦁ Ottiene gli ID delle card presenti su Trello.
+    ⦁ Ottiene gli esperimenti e i commenti presenti nel database.
+    ⦁ Per ogni card presente in Trello, verifica l'esistenza dell'esperimento corrispondente nel database e sincronizza i dati tra Trello e il database.
+    ⦁ Aggiorna lo stato dell'esperimento su Trello con l'ultimo stato dal database.
+    ⦁ Aggiorna la card Trello con i dati aggiornati utilizzando il TrelloGateway.
+    ⦁ In questo modo, la sincronizzazione tra il database e Trello assicura che i dati siano coerenti e aggiornati su entrambe le piattaforme.
+
+CONCLUSIONI 
+Nella classe Startup, viene orchestrata l'integrazione delle due parti di sincronizzazione dei dati, FromTrelloToDBSync e FromDbToTrelloSync. Queste due classi vengono istanziate e configurate all'interno di Startup insieme ai gateways e alle credenziali necessarie per l'accesso e la modifica dei dati su Trello. Le credenziali per l'accesso come amministratore a Trello vengono fornite tramite un file JSON.
+
+Oltre alla sincronizzazione dei dati, all'interno di Startup viene istanziata anche l'istanza della classe SendReport. La classe ReportGenerator è responsabile della creazione di un report in formato Excel. Il report include informazioni dettagliate sui task (o esperimenti) e sul rendimento dei singoli scienziati. Successivamente, la classe ReportSender si occupa di inviare una email contenente il file Excel allegato, a un indirizzo email configurato nell'appsettings.
+
+In questo modo, Startup agisce come punto di ingresso principale per l'esecuzione della sincronizzazione dei dati, la gestione delle credenziali di accesso a Trello e la generazione e l'invio del rapporto di sincronizzazione tramite email. Questa struttura organizzativa garantisce un controllo centralizzato e una gestione completa del processo di sincronizzazione, offrendo al contempo funzionalità di reporting per monitorare e comunicare l'esito delle operazioni eseguite.
+
+
+DOCUMENTAZIONE DI CONCORDIA MVC
+Il Concordia MVC fornisce ha come compito quello di fornire un collegamento al database per i scienziati della Concordia e applicare la logica di sincronizzazione. Come in tutti gli MVC, abbiamo 3 parti: Models, Views e Controllers. 
+
+FUNZIONALITA':
+1) Home: elemento di partenza, al suo interno abbiamo sia la parte di interfaccia base (Index, About, Privacy) che la parte di sincronizzazione (Synchronization: è lanciata ogni volta che le condizioni sono soddisfatte).
+2) Task: specifico per la visualizzazione e lavorazione dei task (Index: elenco degli esperimenti con l'aggiunta dell'ultimo commento), con la possibilità di visualizzare dettagliatamente il task, quindi di modificarne lo stato o inserire un commento (Detail: vista dettagliata con Update dello state e Insert di un comment).
+3) User: specifico par la visualizzazione dei scienziati (Index: elenco dei scienziati), con la possibilità di visualizzare la lista dei task assegnati in modo semplice (Detail Simple: lista singola) o dettagliato (Detail Advanced: lista multipla), quindi essere reindirizzati alla pagina del task (Task Detail).
+
+FOCUS SU TASK e USER CONTROLLERS:
+TaskController:
+• Index(): per restituire una View di un Task (esperimento con aggiunta di informazioni) dobbiamo lavorare attentamente con gli esperimenti, cioè dobbiamo separare gli esperimenti con commenti da quelli senza commenti, quindi costruire i tasks e rimetterli insieme.
+• Detail(): per restituire una View dettagliata di un task dobbiamo prendere in considerazione esperimento, scienziati per esperimento (scientists in experiment), commenti per esperimento (remarks in experiment), scienziati e stati.
+• Insert(): fornisce la possibilità di inserire un commento, se il commento non è valido (vuoto o senza autore) allora non viene inserto, in ogni caso riporta alla pagina dei tasks.
+• Update(): fornisce la possibilità di aggiornare lo stato di un task, se non è stato selezionato uno stato (vuoto) allora non viene aggiornata, in ogni caso riporta alla pagina dei tasks.
+UserController:
+• Index(): restituisce una View dei scienziati presenti nella Concordia, quindi possiamo scegliere tra DetailSingle() e DetailMulti().
+• DetailSingle(): restituisce una View degli esperimenti assegnati allo scienziato riportati in una lista singola ordinata per Ordering().
+• DetailMulti(): restituisce una View degli esperimenti assegnati allo scienziato riportati in tre liste (una lista per ogni state: Start, Working, Finish) ordinate per OrderByPriority().
+• DetailTask(): fornisce la possibilità di essere reindirizzati al task per poi aggiornare lo stato o inserire un commento.
+Nota: per fornire una visualizzazione ordinata dei task, sono state utilizzate due funzioni Ordering() e OrderByPriority().
+• OrderByPriority(): ordina gli esperimenti in base alla priorità e alla data di scadenza, ovvero prima quelli con priorità, dopo quelli con data di scadenza inferiore a 5 giorni, poi quelli con priorità e infine quelli con priorità bassa.
+• Ordering(): ordina gli esperimenti in base allo stato, ovvero se sono in Start o Working allora saranno ordinati per OrderByPriority() mentre se sono in Finish allora saranno messi per ultimi.

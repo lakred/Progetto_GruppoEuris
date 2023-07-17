@@ -1,0 +1,122 @@
+﻿@model ConcordiaMVC.Models.TaskBig
+
+@{
+    ViewData["Title"] = "Task Detail";
+    Layout = "_Layout";
+}
+
+<style>
+    .custom-width {
+        width: calc(48%);
+    }
+
+    .section-spacing-right {
+        margin-right: 10px;
+    }
+
+    .section-spacing-left {
+        margin-left: 10px;
+    }
+</style>
+
+<h2 class="display-5">@ViewData["Title"]</h2>
+
+<div class="d-flex flex-row">
+
+    <div class="custom-width order-1 section-spacing-right">
+        <h4> Data </h4>
+        @using (Html.BeginForm("Update", "Tasks", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.Experiment)
+            @Html.HiddenFor(model => model.Experiment!.PriorityId)
+            @Html.HiddenFor(model => model.Experiment!.StateId)
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Experiment!.Id, "Id", new { @class = "form-label", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Experiment!.Id, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Experiment!.Name, "Name", new { @class = "form-label", @readonly = "readonly" })
+                @Html.TextAreaFor(model => model.Experiment!.Name, new { @class = "form-control", @readonly = "readonly", style = "height: 60px;" })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Experiment!.Priority!.Name, "Priority", new { @class = "form-label", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Experiment!.Priority!.Name, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Experiment!.State!.Name, "State", new { @class = "form-label", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Experiment!.State!.Name, new { @class = "form-control", @readonly = "readonly" })
+                @Html.DropDownListFor(model => model.SelectedState, new SelectList(Model.States, "Id", "Name", "Code"), "Update State", new { @class = "form-control" })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Experiment!.StartDate, "StartDate", new { @class = "form-label", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Experiment!.StartDate, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Experiment!.DueDate, "DueDate", new { @class = "form-label", @readonly = "readonly" })
+                @Html.TextBoxFor(model => model.Experiment!.DueDate, new { @class = "form-control", @readonly = "readonly" })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Experiment!.Description, "Description", new { @class = "form-label", @readonly = "readonly" })
+                @Html.TextAreaFor(model => model.Experiment!.Description, new { @class = "form-control", @readonly = "readonly", style = "height: 160px;" })
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Assignees, "Assignees", new { @class = "form-label", @readonly = "readonly" })
+                @{ string assignees = Model.Assignees is not null ? $"{Model.Assignees.Aggregate(string.Empty, (c, t) => $"{c}{t.FullName},{Environment.NewLine}").TrimEnd().TrimEnd(',')}." : string.Empty; }
+                @Html.TextAreaFor(model => assignees, new { @class = "form-control", @readonly = "readonly", style = "height: 80px;" })
+            </div>
+
+            <button type="submit" class="btn btn-outline-dark"> Update </button>
+        }
+
+        <br>
+
+        @using (Html.BeginForm("Insert", "Tasks", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.Experiment)
+            @Html.HiddenFor(model => model.Experiment!.Id)
+            @Html.HiddenFor(model => model.Experiment!.Code)
+            @Html.HiddenFor(model => model.Experiment!.Name)
+            @Html.HiddenFor(model => model.Experiment!.Description)
+            @Html.HiddenFor(model => model.Experiment!.StartDate)
+            @Html.HiddenFor(model => model.Experiment!.DueDate)
+            @Html.HiddenFor(model => model.Experiment!.Description)
+            @Html.HiddenFor(model => model.Experiment!.PriorityId)
+            @Html.HiddenFor(model => model.Experiment!.StateId)
+
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Comment, "Comment", new { @class = "form-label", @readonly = "readonly" })
+                @Html.TextAreaFor(model => model.Comment, new { @class = "form-control", style = "height: 120px;" })
+            </div>
+            <div class="mb-3">
+                @Html.LabelFor(model => model.Scientists, "Author", new { @class = "form-label", @readonly = "readonly" })
+                @Html.DropDownListFor(model => model.SelectedAuthor, new SelectList(Model.Scientists, "Id", "FullName", "Code"), "Insert Author", new { @class = "form-control" })
+            </div>
+
+            <button type="submit" class="btn btn-outline-dark"> Comment </button>
+        }
+    </div>
+
+    <div class="custom-width order-2 section-spacing-left">
+        <h4> Comment List </h4>
+        <div class="d-flex flex-column align-items-center">
+            @foreach (var remark in Model.Remarks!)
+            {
+                <div class="card w-100 mb-2 border border-dark">
+                    <div class="card-body d-flex flex-column position-relative">
+                        <h6 class="card-title"> Text: @remark.Text </h6>
+                        <h6 class="card-title"> Date: @remark.Date </h6>
+                        <h6 class="card-title"> Author: @remark.Scientist!.FullName </h6>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

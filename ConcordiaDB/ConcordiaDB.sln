@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConcordiaDBLibrary", "ConcordiaDBLibrary\ConcordiaDBLibrary.csproj", "{92924ABC-A16A-4DFB-A903-0DE4A70C0A60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcordiaDBTestTDD", "ConcordiaDBTestTDD\ConcordiaDBTestTDD.csproj", "{02B2B8DD-2E3E-485F-94D1-56336518BA50}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92924ABC-A16A-4DFB-A903-0DE4A70C0A60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92924ABC-A16A-4DFB-A903-0DE4A70C0A60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92924ABC-A16A-4DFB-A903-0DE4A70C0A60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92924ABC-A16A-4DFB-A903-0DE4A70C0A60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02B2B8DD-2E3E-485F-94D1-56336518BA50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02B2B8DD-2E3E-485F-94D1-56336518BA50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02B2B8DD-2E3E-485F-94D1-56336518BA50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02B2B8DD-2E3E-485F-94D1-56336518BA50}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7F947B8-C23E-4C7E-A2CB-54C9AF9CAFBD}
+	EndGlobalSection
+EndGlobal

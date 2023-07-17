@@ -1,0 +1,59 @@
+﻿@model ConcordiaMVC.Models.UserSingleList
+
+@{
+    ViewData["Title"] = "User Simple Detail";
+    Layout = "_Layout";
+}
+
+<h2 class="display-5"> @ViewData["Title"] </h2>
+
+<div class="d-flex flex-row">
+    <div class="d-flex flex-column w-100">
+        <h4> User </h4>
+        <form class="border border-dark rounded p-3">
+            <div class="row mb-3">
+                <label for="inputId" class="col-sm-2 col-form-label">
+                    @Html.LabelFor(model => model.Scientist.Id, new { @class = "form-label mr-1" })
+                </label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.Scientist.Id, new { @class = "form-control mb-2", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="inputCode" class="col-sm-2 col-form-label">
+                    @Html.LabelFor(model => model.Scientist.Code, new { @class = "form-label mr-1" })
+                </label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.Scientist.Code, new { @class = "form-control mb-2", @readonly = "readonly" })
+                </div>
+            </div>
+            <div class="row mb-0">
+                <label for="inputFullName" class="col-sm-2 col-form-label">
+                    @Html.LabelFor(model => model.Scientist.FullName, new { @class = "form-label mr-1" })
+                </label>
+                <div class="col-sm-10">
+                    @Html.TextBoxFor(model => model.Scientist.FullName, new { @class = "form-control mb-2", @readonly = "readonly" })
+                </div>
+            </div>
+        </form>
+
+        <br>
+
+        <h4> Tasks List </h4>
+        <div class="d-flex flex-column align-items-center">
+            @foreach (var experiment in Model.Experiments!)
+            {
+                <div class="card w-100 mb-2 border border-dark">
+                    <div class="card-body d-flex flex-column position-relative">
+                        <h5 class="card-title"> Id: @experiment.Id - @experiment.Name </h5>
+                        <h6 class="card-title"> Priority: <span style="color: @experiment.Priority!.Color;"> @experiment.Priority.Name </span> </h6>
+                        <h6 class="card-title"> State: @experiment.State!.Name </h6>
+                        <h6 class="card-title"> Start: @experiment.StartDate </h6>
+                        <h6 class="card-title"> Due: @experiment.DueDate </h6>
+                        <a class="btn btn-outline-dark position-absolute bottom-0 end-0 m-3" asp-action="DetailTask" asp-route-id="@experiment.Id"> Detail </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
